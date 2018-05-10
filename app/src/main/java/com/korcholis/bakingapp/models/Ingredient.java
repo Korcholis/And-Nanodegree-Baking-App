@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+@SuppressWarnings("WeakerAccess")
 public class Ingredient implements Parcelable {
     public static final Parcelable.Creator<Ingredient> CREATOR =
             new Parcelable.Creator<Ingredient>() {

@@ -10,7 +10,7 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 
-public class CakeActivity extends AppCompatActivity {
+public abstract class CakeActivity extends AppCompatActivity {
     @Inject
     RecipesApi recipes;
 

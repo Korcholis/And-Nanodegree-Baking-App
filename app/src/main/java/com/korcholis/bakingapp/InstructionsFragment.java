@@ -223,6 +223,7 @@ public class InstructionsFragment extends Fragment {
     /**
      * A placeholder fragment containing a simple view.
      */
+    @SuppressWarnings("deprecation")
     public static class StepPageFragment extends Fragment {
         @BindView(R.id.step_description)
         TextView stepDescription;

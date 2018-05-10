@@ -9,8 +9,12 @@
     <string name="title_step_list">Steps</string>
     <string name="title_step_detail">Step Detail</string>
     <string name="title_activity_recipe_instructions">Recipe Instructions</string>
-    <string name="configure">Configure</string>
+    <string name="config_show_ingredients">Show the ingredients for:</string>
     <string name="add_widget">Add widget</string>
     <string name="how_to_title">How to</string>
     <string name="ingredients_title">Ingredients</string>
+    <string name="warning">Warning!</string>
+    <string name="thumbnail">Thumbnail</string>
+    <string name="recipe">Recipe</string>
+    <string name="list_empty">The list is empty</string>
 </resources>

@@ -60,7 +60,7 @@ public class RecipeDetailActivity extends CakeActivity {
     private boolean mTwoPane;
     private IngredientsAdapter ingredientsAdapter;
     private RecipeStepsAdapter stepsAdapter;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private int recipeId;
 
@@ -123,8 +123,8 @@ public class RecipeDetailActivity extends CakeActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView ingredientsList, @NonNull RecyclerView stepsList) {
-        ingredientsAdapter = new IngredientsAdapter(new ArrayList<Ingredient>(), this);
-        stepsAdapter = new RecipeStepsAdapter(new ArrayList<RecipeStep>(), this);
+        ingredientsAdapter = new IngredientsAdapter(new ArrayList<Ingredient>());
+        stepsAdapter = new RecipeStepsAdapter(new ArrayList<RecipeStep>());
 
         stepsAdapter.setOnItemClickListener(new RecipeStepsAdapter.OnItemClickListener() {
             @Override
@@ -161,10 +161,7 @@ public class RecipeDetailActivity extends CakeActivity {
                         Cursor recipeCursor = resolver.query(ContentUris.withAppendedId(RecipesDBContract.RecipeEntry.CONTENT_URI, recipeId), null, null, null, null);
                         Cursor ingredientsCursor = resolver.query(RecipesDBContract.RecipeEntry.CONTENT_URI.buildUpon().appendPath(recipeId + "").appendPath(RecipesDBContract.PATH_INGREDIENTS).build(), null, null, null, null);
                         Cursor stepsCursor = resolver.query(RecipesDBContract.RecipeEntry.CONTENT_URI.buildUpon().appendPath(recipeId + "").appendPath(RecipesDBContract.PATH_STEPS).build(), null, null, null, null);
-
-                        Recipe recipe = RecipesDBHelper.cursorToRecipeWithExtras(recipeCursor, ingredientsCursor, stepsCursor);
-
-                        return recipe;
+                        return RecipesDBHelper.cursorToRecipeWithExtras(recipeCursor, ingredientsCursor, stepsCursor);
                     }
                 })
                         .subscribeOn(Schedulers.computation())

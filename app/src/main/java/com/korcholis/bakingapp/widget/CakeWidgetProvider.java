@@ -10,6 +10,7 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.korcholis.bakingapp.BuildConfig;
 import com.korcholis.bakingapp.R;
 import com.korcholis.bakingapp.provider.IngredientsWidgetService;
 
@@ -21,7 +22,7 @@ public class CakeWidgetProvider extends AppWidgetProvider {
     public static final String UPDATE_ACTION = "android.appwidget.action.APPWIDGET_UPDATE";
     public static final String RECIPE_ID = "recipe_id";
 
-    public static final String TAG = "[CWP]";
+    private static final String TAG = "[CWP]";
 
     static void updateAppWidget(final Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
@@ -37,7 +38,7 @@ public class CakeWidgetProvider extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.cake_widget_provider);
         views.setEmptyView(R.id.ingredient_list, R.id.empty_tv);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+        if (BuildConfig.VERSION_CODE >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             views.setRemoteAdapter(R.id.ingredient_list, intent);
         } else {
             views.setRemoteAdapter(appWidgetId, R.id.ingredient_list, intent);

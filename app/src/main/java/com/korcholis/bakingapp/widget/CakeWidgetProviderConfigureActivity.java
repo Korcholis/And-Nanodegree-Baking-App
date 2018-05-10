@@ -56,7 +56,7 @@ public class CakeWidgetProviderConfigureActivity extends Activity {
     private static final String PREF_PREFIX_KEY = "cakewidget_";
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    int mAppWidgetId = 100;
+    private int mAppWidgetId = 100;
     private RecipesListAdapter adapter;
 
     public CakeWidgetProviderConfigureActivity() {
@@ -64,7 +64,7 @@ public class CakeWidgetProviderConfigureActivity extends Activity {
     }
 
     // Write the prefix to the SharedPreferences object for this widget
-    static void saveRecipeIdPrefix(Context context, int appWidgetId, int recipeId) {
+    private static void saveRecipeIdPrefix(Context context, int appWidgetId, int recipeId) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.putInt(PREF_PREFIX_KEY + appWidgetId, recipeId);
         prefs.apply();
@@ -74,8 +74,7 @@ public class CakeWidgetProviderConfigureActivity extends Activity {
     // If there is no preference saved, get the default from a resource
     static int loadRecipeIdPrefix(Context context, int appWidgetId) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        int recipeId = prefs.getInt(PREF_PREFIX_KEY + appWidgetId, -1);
-        return recipeId;
+        return prefs.getInt(PREF_PREFIX_KEY + appWidgetId, -1);
     }
 
     static void deleteRecipeIdPref(Context context, int appWidgetId) {

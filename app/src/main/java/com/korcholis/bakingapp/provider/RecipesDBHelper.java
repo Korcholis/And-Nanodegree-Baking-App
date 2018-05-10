@@ -119,7 +119,7 @@ public class RecipesDBHelper extends SQLiteOpenHelper {
             }
         }
         if (recipeCursor.moveToFirst()) {
-            Recipe recipe = new Recipe(
+            return new Recipe(
                     recipeCursor.getInt(recipeCursor.getColumnIndex(RecipesDBContract.RecipeEntry._ID)),
                     recipeCursor.getString(recipeCursor.getColumnIndex(RecipesDBContract.RecipeEntry.COLUMN_NAME)),
                     recipeCursor.getString(recipeCursor.getColumnIndex(RecipesDBContract.RecipeEntry.COLUMN_IMAGE)),
@@ -127,7 +127,6 @@ public class RecipesDBHelper extends SQLiteOpenHelper {
                     ingredients,
                     steps
             );
-            return recipe;
         }
 
         throw new SQLiteException();

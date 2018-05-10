@@ -15,7 +15,7 @@
         android:id="@+id/empty_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="The list is empty"
+        android:text="@string/list_empty"
         android:textSize="30sp" />
 
 </FrameLayout>

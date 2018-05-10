@@ -25,17 +25,11 @@ public class RecipesApi {
     private static final String BASE_URL = "http://go.udacity.com/";
 
     private static Retrofit instance = null;
-    private Context context;
     private RecipesApiSignature signature;
 
     @Inject
     public RecipesApi(Context context) {
-        this.context = context;
         signature = instance(context);
-    }
-
-    public RecipesApiSignature api() {
-        return signature;
     }
 
     public static RecipesApiSignature instance(final Context context) {
@@ -97,5 +91,9 @@ public class RecipesApi {
         }).cache(cache);
 
         return httpClient.build();
+    }
+
+    public RecipesApiSignature api() {
+        return signature;
     }
 }
