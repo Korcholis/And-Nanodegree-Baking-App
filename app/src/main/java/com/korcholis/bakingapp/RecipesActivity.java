@@ -7,11 +7,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.korcholis.bakingapp.adapters.RecipesListAdapter;
@@ -39,10 +40,14 @@ import io.reactivex.schedulers.Schedulers;
 public class RecipesActivity extends CakeActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
     @BindView(R.id.recipes_rv)
     RecyclerView recipesList;
+    @BindView(R.id.loading_pb)
+    ProgressBar loadingPb;
+    @BindView(R.id.error_layer)
+    LinearLayout errorLayer;
+    @BindView(R.id.error_message)
+    TextView errorMessage;
 
     private RecipesListAdapter adapter;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -54,14 +59,6 @@ public class RecipesActivity extends CakeActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         List<Recipe> recipes = new ArrayList<>();
 
@@ -80,6 +77,7 @@ public class RecipesActivity extends CakeActivity {
     }
 
     private void loadRecipes() {
+        showLoading();
         compositeDisposable.add(
                 recipes.api().recipes()
                         .subscribeOn(Schedulers.io())
@@ -161,7 +159,7 @@ public class RecipesActivity extends CakeActivity {
                         showNoConnectionErrorToast(false);
                         Toast.makeText(RecipesActivity.this, "No network", Toast.LENGTH_SHORT).show();
                     } else {
-                        showMovieListErrorToast(false);
+                        showErrorListErrorToast(false);
                     }
                 } else {
                     adapter.swapContent(recipes);
@@ -169,7 +167,7 @@ public class RecipesActivity extends CakeActivity {
                         if (!ConnectionChecker.isNetworkAvailable(RecipesActivity.this)) {
                             showErrorView(R.string.error_no_connection);
                         } else {
-                            showErrorView(R.string.error_movies_wrong_data);
+                            showErrorView(R.string.error_recipe_wrong_data);
                         }
                     } else {
                         showList();
@@ -185,28 +183,32 @@ public class RecipesActivity extends CakeActivity {
         super.onDestroy();
     }
 
+    private void showLoading() {
+        errorLayer.setVisibility(View.GONE);
+        loadingPb.setVisibility(View.VISIBLE);
+        recipesList.setVisibility(View.INVISIBLE);
+    }
+
     private void showList() {
+        errorLayer.setVisibility(View.GONE);
+        loadingPb.setVisibility(View.GONE);
         recipesList.setVisibility(View.VISIBLE);
     }
 
     private void showErrorView(int errorMessageId) {
-        recipesList.setVisibility(View.GONE);
+        loadingPb.setVisibility(View.GONE);
+        errorLayer.setVisibility(View.VISIBLE);
+        errorMessage.setText(errorMessageId);
+        recipesList.setVisibility(View.INVISIBLE);
     }
 
-    protected void showMovieListErrorToast(boolean alsoExit) {
+    protected void showErrorListErrorToast(boolean alsoExit) {
         if (alsoExit) {
             finish();
         }
-        Toast.makeText(this, R.string.error_movies_wrong_data, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.error_recipe_wrong_data, Toast.LENGTH_SHORT).show();
     }
 
-
-    protected void showMovieErrorToast(boolean alsoExit) {
-        if (alsoExit) {
-            finish();
-        }
-        Toast.makeText(this, R.string.error_movie_not_exists, Toast.LENGTH_SHORT).show();
-    }
 
     protected void showNoConnectionErrorToast(boolean alsoExit) {
         if (alsoExit) {

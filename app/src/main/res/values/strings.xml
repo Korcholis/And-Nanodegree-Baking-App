@@ -1,9 +1,8 @@
 <resources>
     <string name="app_name">Cakelicious</string>
     <string name="title_activity_recipes_list">Recipes</string>
-    <string name="error_movie_not_exists">Sorry, but that movie doesn\'t exist at all</string>
-    <string name="error_movies_wrong_data">Sorry, but the movies couldn\'t be opened</string>
-    <string name="error_empty_favs">Check some movies and click on the heart to fav it!</string>
+    <string name="error_recipe_not_exists">Sorry, but that recipe doesn\'t exist at all</string>
+    <string name="error_recipe_wrong_data">Sorry, but the recipes couldn\'t be opened</string>
     <string name="error_no_connection">Internet is not available</string>
     <string name="error_no_connection_sb">Internet is not available. Showing cached data</string>
     <string name="action_settings">Settings</string>
@@ -11,7 +10,6 @@
     <string name="title_step_detail">Step Detail</string>
     <string name="title_activity_recipe_instructions">Recipe Instructions</string>
     <string name="section_format">Hello World from section: %1$d</string>
-    <string name="appwidget_text">EXAMPLE</string>
     <string name="configure">Configure</string>
     <string name="add_widget">Add widget</string>
 </resources>

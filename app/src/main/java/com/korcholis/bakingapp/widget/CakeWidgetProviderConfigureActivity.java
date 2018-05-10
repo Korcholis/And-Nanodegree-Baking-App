@@ -233,7 +233,7 @@ public class CakeWidgetProviderConfigureActivity extends Activity {
                         if (!ConnectionChecker.isNetworkAvailable(CakeWidgetProviderConfigureActivity.this)) {
                             showErrorView(R.string.error_no_connection);
                         } else {
-                            showErrorView(R.string.error_movies_wrong_data);
+                            showErrorView(R.string.error_recipe_wrong_data);
                         }
                     } else {
                         showList();
