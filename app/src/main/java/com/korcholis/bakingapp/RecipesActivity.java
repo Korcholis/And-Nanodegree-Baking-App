@@ -59,6 +59,7 @@ public class RecipesActivity extends CakeActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.title_activity_recipes_list);
 
         List<Recipe> recipes = new ArrayList<>();
 
@@ -157,7 +158,6 @@ public class RecipesActivity extends CakeActivity {
                 if (recipes == null) {
                     if (!ConnectionChecker.isNetworkAvailable(RecipesActivity.this)) {
                         showNoConnectionErrorToast(false);
-                        Toast.makeText(RecipesActivity.this, "No network", Toast.LENGTH_SHORT).show();
                     } else {
                         showErrorListErrorToast(false);
                     }

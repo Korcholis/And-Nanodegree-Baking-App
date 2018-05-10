@@ -9,7 +9,8 @@
     <string name="title_step_list">Steps</string>
     <string name="title_step_detail">Step Detail</string>
     <string name="title_activity_recipe_instructions">Recipe Instructions</string>
-    <string name="section_format">Hello World from section: %1$d</string>
     <string name="configure">Configure</string>
     <string name="add_widget">Add widget</string>
+    <string name="how_to_title">How to</string>
+    <string name="ingredients_title">Ingredients</string>
 </resources>
