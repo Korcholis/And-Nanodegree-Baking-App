@@ -38,7 +38,7 @@ public class CakeWidgetProvider extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.cake_widget_provider);
         views.setEmptyView(R.id.ingredient_list, R.id.empty_tv);
 
-        if (BuildConfig.VERSION_CODE >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             views.setRemoteAdapter(R.id.ingredient_list, intent);
         } else {
             views.setRemoteAdapter(appWidgetId, R.id.ingredient_list, intent);
