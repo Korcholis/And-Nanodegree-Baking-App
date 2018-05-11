@@ -66,9 +66,9 @@ public class RecipesActivity extends CakeActivity {
         adapter = new RecipesListAdapter(recipes, this);
         adapter.setOnItemClickListener(new RecipesListAdapter.OnItemClickListener() {
             @Override
-            public void onClick(int recipeId) {
+            public void onClick(Recipe recipe) {
                 Intent intent = new Intent(RecipesActivity.this, RecipeDetailActivity.class);
-                intent.putExtra(Constants.PARAM_RECIPE_ID, recipeId);
+                intent.putExtra(Constants.PARAM_RECIPE_ID, recipe.getId());
                 startActivity(intent);
             }
         });

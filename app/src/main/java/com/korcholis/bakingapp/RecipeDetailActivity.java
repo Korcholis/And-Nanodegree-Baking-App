@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -43,6 +44,7 @@ import io.reactivex.schedulers.Schedulers;
  * item details side-by-side using two vertical panes.
  */
 public class RecipeDetailActivity extends CakeActivity {
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @Nullable
@@ -52,7 +54,6 @@ public class RecipeDetailActivity extends CakeActivity {
     RecyclerView ingredientsList;
     @BindView(R.id.step_list)
     RecyclerView stepsList;
-
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -60,8 +61,6 @@ public class RecipeDetailActivity extends CakeActivity {
     private boolean mTwoPane;
     private IngredientsAdapter ingredientsAdapter;
     private RecipeStepsAdapter stepsAdapter;
-    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-
     private int recipeId;
 
     @Override
@@ -158,9 +157,14 @@ public class RecipeDetailActivity extends CakeActivity {
                     public Recipe call() {
                         ContentResolver resolver = getContentResolver();
 
-                        Cursor recipeCursor = resolver.query(ContentUris.withAppendedId(RecipesDBContract.RecipeEntry.CONTENT_URI, recipeId), null, null, null, null);
-                        Cursor ingredientsCursor = resolver.query(RecipesDBContract.RecipeEntry.CONTENT_URI.buildUpon().appendPath(recipeId + "").appendPath(RecipesDBContract.PATH_INGREDIENTS).build(), null, null, null, null);
-                        Cursor stepsCursor = resolver.query(RecipesDBContract.RecipeEntry.CONTENT_URI.buildUpon().appendPath(recipeId + "").appendPath(RecipesDBContract.PATH_STEPS).build(), null, null, null, null);
+                        Uri recipeUri = ContentUris.withAppendedId(RecipesDBContract.RecipeEntry.CONTENT_URI, recipeId);
+                        Uri ingredientsUri = RecipesDBContract.RecipeEntry.CONTENT_URI.buildUpon().appendPath(recipeId + "").appendPath(RecipesDBContract.PATH_INGREDIENTS).build();
+                        Uri stepsUri = RecipesDBContract.RecipeEntry.CONTENT_URI.buildUpon().appendPath(recipeId + "").appendPath(RecipesDBContract.PATH_STEPS).build();
+
+                        Cursor recipeCursor = resolver.query(recipeUri, null, null, null, null);
+                        Cursor ingredientsCursor = resolver.query(ingredientsUri, null, null, null, null);
+                        Cursor stepsCursor = resolver.query(stepsUri, null, null, null, null);
+
                         return RecipesDBHelper.cursorToRecipeWithExtras(recipeCursor, ingredientsCursor, stepsCursor);
                     }
                 })

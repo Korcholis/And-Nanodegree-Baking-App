@@ -1,32 +1,32 @@
-package com.korcholis.bakingapp.provider;
+package com.korcholis.bakingapp.widget;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Binder;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.korcholis.bakingapp.R;
 import com.korcholis.bakingapp.models.Ingredient;
 import com.korcholis.bakingapp.models.Recipe;
-import com.korcholis.bakingapp.widget.CakeWidgetProvider;
+import com.korcholis.bakingapp.provider.RecipesDBContract;
+import com.korcholis.bakingapp.provider.RecipesDBHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class IngredientsWidgetService extends RemoteViewsService {
-    public static final String TAG = "[CWP][IWS]";
     List<Ingredient> ingredients = new ArrayList<>();
     int recipeId;
     Recipe recipe;
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        Log.i(TAG, "onGetViewFactory");
         return new IngredientsRemoteViewsFactory(this.getApplicationContext(), intent);
     }
 
@@ -34,34 +34,38 @@ public class IngredientsWidgetService extends RemoteViewsService {
         private Context context;
 
         public IngredientsRemoteViewsFactory(Context context, Intent intent) {
-            Log.i(TAG, "Factory");
             this.context = context;
             recipeId = intent.getExtras().getInt(CakeWidgetProvider.RECIPE_ID);
         }
 
         @Override
         public void onCreate() {
-            Log.i(TAG, "onCreate");
         }
 
         @Override
         public void onDataSetChanged() {
-            Log.i(TAG, "onDataSetChanged");
+            final long identityToken = Binder.clearCallingIdentity();
+
             ContentResolver resolver = context.getContentResolver();
 
-            Cursor recipeCursor = resolver.query(ContentUris.withAppendedId(RecipesDBContract.RecipeEntry.CONTENT_URI, recipeId), null, null, null, null);
-            Cursor ingredientsCursor = resolver.query(RecipesDBContract.RecipeEntry.CONTENT_URI.buildUpon().appendPath(recipeId + "").appendPath(RecipesDBContract.PATH_INGREDIENTS).build(), null, null, null, null);
-            Cursor stepsCursor = resolver.query(RecipesDBContract.RecipeEntry.CONTENT_URI.buildUpon().appendPath(recipeId + "").appendPath(RecipesDBContract.PATH_STEPS).build(), null, null, null, null);
+            Uri recipeUri = ContentUris.withAppendedId(RecipesDBContract.RecipeEntry.CONTENT_URI, recipeId);
+            Uri ingredientsUri = RecipesDBContract.RecipeEntry.CONTENT_URI.buildUpon().appendPath(recipeId + "").appendPath(RecipesDBContract.PATH_INGREDIENTS).build();
+            Uri stepsUri = RecipesDBContract.RecipeEntry.CONTENT_URI.buildUpon().appendPath(recipeId + "").appendPath(RecipesDBContract.PATH_STEPS).build();
+
+            Cursor recipeCursor = resolver.query(recipeUri, null, null, null, null);
+            Cursor ingredientsCursor = resolver.query(ingredientsUri, null, null, null, null);
+            Cursor stepsCursor = resolver.query(stepsUri, null, null, null, null);
 
             recipe = RecipesDBHelper.cursorToRecipeWithExtras(recipeCursor, ingredientsCursor, stepsCursor);
 
             ingredients = recipe.getIngredients();
-            Log.i(TAG, "accept: " + ingredients.size());
+
+            Binder.restoreCallingIdentity(identityToken);
         }
 
         @Override
         public void onDestroy() {
-            Log.i(TAG, "onDestroy");
+
         }
 
         @Override
@@ -71,7 +75,6 @@ public class IngredientsWidgetService extends RemoteViewsService {
 
         @Override
         public RemoteViews getViewAt(int i) {
-            Log.i(TAG, "getViewAt");
             RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_list_item);
 
             String ingredient = ingredients.get(i).getName();

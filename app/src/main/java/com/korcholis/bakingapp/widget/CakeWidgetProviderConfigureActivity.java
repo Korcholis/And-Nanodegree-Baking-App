@@ -54,6 +54,8 @@ public class CakeWidgetProviderConfigureActivity extends Activity {
 
     private static final String PREFS_NAME = "com.korcholis.bakingapp.widget.CakeWidgetProvider";
     private static final String PREF_PREFIX_KEY = "cakewidget_";
+    private static final String PREF_SUFFIX_ID = "_id";
+    private static final String PREF_SUFFIX_NAME = "_name";
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private int mAppWidgetId = 100;
@@ -64,22 +66,27 @@ public class CakeWidgetProviderConfigureActivity extends Activity {
     }
 
     // Write the prefix to the SharedPreferences object for this widget
-    private static void saveRecipeIdPrefix(Context context, int appWidgetId, int recipeId) {
+    private static void saveRecipeData(Context context, int appWidgetId, int recipeId, String recipeName) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        prefs.putInt(PREF_PREFIX_KEY + appWidgetId, recipeId);
+        prefs.putInt(PREF_PREFIX_KEY + appWidgetId + PREF_SUFFIX_ID, recipeId);
+        prefs.putString(PREF_PREFIX_KEY + appWidgetId + PREF_SUFFIX_NAME, recipeName);
         prefs.apply();
     }
 
-    // Read the prefix from the SharedPreferences object for this widget.
-    // If there is no preference saved, get the default from a resource
-    static int loadRecipeIdPrefix(Context context, int appWidgetId) {
+    static int loadRecipeId(Context context, int appWidgetId) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        return prefs.getInt(PREF_PREFIX_KEY + appWidgetId, -1);
+        return prefs.getInt(PREF_PREFIX_KEY + appWidgetId + PREF_SUFFIX_ID, -1);
+    }
+
+    static String loadRecipeName(Context context, int appWidgetId) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        return prefs.getString(PREF_PREFIX_KEY + appWidgetId + PREF_SUFFIX_NAME, "");
     }
 
     static void deleteRecipeIdPref(Context context, int appWidgetId) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        prefs.remove(PREF_PREFIX_KEY + appWidgetId);
+        prefs.remove(PREF_PREFIX_KEY + appWidgetId + PREF_SUFFIX_ID);
+        prefs.remove(PREF_PREFIX_KEY + appWidgetId + PREF_SUFFIX_NAME);
         prefs.apply();
     }
 
@@ -114,11 +121,11 @@ public class CakeWidgetProviderConfigureActivity extends Activity {
         adapter = new RecipesListAdapter(recipes, this);
         adapter.setOnItemClickListener(new RecipesListAdapter.OnItemClickListener() {
             @Override
-            public void onClick(int recipeId) {
+            public void onClick(final Recipe recipe) {
                 final Context context = CakeWidgetProviderConfigureActivity.this;
 
                 // When the button is clicked, store the string locally
-                saveRecipeIdPrefix(context, mAppWidgetId, recipeId);
+                saveRecipeData(context, mAppWidgetId, recipe.getId(), recipe.getName());
 
                 // It is the responsibility of the configuration activity to update the app widget
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);

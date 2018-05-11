@@ -10,9 +10,7 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import com.korcholis.bakingapp.BuildConfig;
 import com.korcholis.bakingapp.R;
-import com.korcholis.bakingapp.provider.IngredientsWidgetService;
 
 /**
  * Implementation of App Widget functionality.
@@ -26,7 +24,8 @@ public class CakeWidgetProvider extends AppWidgetProvider {
 
     static void updateAppWidget(final Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-        int recipeId = CakeWidgetProviderConfigureActivity.loadRecipeIdPrefix(context, appWidgetId);
+        int recipeId = CakeWidgetProviderConfigureActivity.loadRecipeId(context, appWidgetId);
+        String recipeName = CakeWidgetProviderConfigureActivity.loadRecipeName(context, appWidgetId);
 
         Log.i(TAG, "updateAppWidget: " + recipeId);
 
@@ -37,6 +36,7 @@ public class CakeWidgetProvider extends AppWidgetProvider {
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.cake_widget_provider);
         views.setEmptyView(R.id.ingredient_list, R.id.empty_tv);
+        views.setTextViewText(R.id.ingredients_title, recipeName);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             views.setRemoteAdapter(R.id.ingredient_list, intent);
@@ -60,7 +60,7 @@ public class CakeWidgetProvider extends AppWidgetProvider {
         AppWidgetManager mgr = AppWidgetManager.getInstance(context);
         if (intent.getAction().equals(UPDATE_ACTION)) {
             int appWidgetIds[] = mgr.getAppWidgetIds(new ComponentName(context, CakeWidgetProvider.class));
-            mgr.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.ingredient_lv);
+            mgr.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.ingredient_list);
         }
         super.onReceive(context, intent);
     }
@@ -73,9 +73,11 @@ public class CakeWidgetProvider extends AppWidgetProvider {
     }
 
     @Override
-    public void onEnabled(Context context) { }
+    public void onEnabled(Context context) {
+    }
 
     @Override
-    public void onDisabled(Context context) { }
+    public void onDisabled(Context context) {
+    }
 }
 
