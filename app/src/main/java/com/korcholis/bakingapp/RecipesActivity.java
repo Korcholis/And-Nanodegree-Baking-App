@@ -80,6 +80,31 @@ public class RecipesActivity extends CakeActivity {
     private void loadRecipes() {
         showLoading();
         compositeDisposable.add(
+                Observable.fromCallable(new Callable<List<Recipe>>() {
+                    @Override
+                    public List<Recipe> call() {
+                        ContentResolver resolver = getContentResolver();
+
+                        Uri recipesUri = RecipesDBContract.RecipeEntry.CONTENT_URI;
+
+                        Cursor recipeCursor = resolver.query(recipesUri, null, null, null, null);
+
+                        return RecipesDBHelper.cursorToRecipes(recipeCursor);
+                    }
+                })
+                        .subscribeOn(Schedulers.computation())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(onRecipesListLoaded(), new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) {
+                                if (throwable instanceof ConnectionNotAvailableException) {
+
+                                }
+                            }
+                        })
+        );
+
+        compositeDisposable.add(
                 recipes.api().recipes()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

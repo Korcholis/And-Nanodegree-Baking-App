@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".InstructionsActivity"
+    android:id="@+id/root"
     tools:ignore="MergeRootFrame">
 
     <android.support.design.widget.AppBarLayout
