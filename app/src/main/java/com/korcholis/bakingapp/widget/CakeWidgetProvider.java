@@ -1,5 +1,6 @@
 package com.korcholis.bakingapp.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
@@ -11,6 +12,8 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.korcholis.bakingapp.R;
+import com.korcholis.bakingapp.RecipeDetailActivity;
+import com.korcholis.bakingapp.utils.Constants;
 
 /**
  * Implementation of App Widget functionality.
@@ -20,14 +23,10 @@ public class CakeWidgetProvider extends AppWidgetProvider {
     public static final String UPDATE_ACTION = "android.appwidget.action.APPWIDGET_UPDATE";
     public static final String RECIPE_ID = "recipe_id";
 
-    private static final String TAG = "[CWP]";
-
     static void updateAppWidget(final Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
         int recipeId = CakeWidgetProviderConfigureActivity.loadRecipeId(context, appWidgetId);
         String recipeName = CakeWidgetProviderConfigureActivity.loadRecipeName(context, appWidgetId);
-
-        Log.i(TAG, "updateAppWidget: " + recipeId);
 
         Intent intent = new Intent(context, IngredientsWidgetService.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
@@ -42,6 +41,13 @@ public class CakeWidgetProvider extends AppWidgetProvider {
             views.setRemoteAdapter(R.id.ingredient_list, intent);
         } else {
             views.setRemoteAdapter(appWidgetId, R.id.ingredient_list, intent);
+        }
+
+        if (recipeId != -1) {
+            Intent clickIntent = new Intent(context, RecipeDetailActivity.class);
+            clickIntent.putExtra(Constants.PARAM_RECIPE_ID, recipeId);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, clickIntent, 0);
+            views.setOnClickPendingIntent(R.id.open_recipe_btn, pendingIntent);
         }
 
         appWidgetManager.updateAppWidget(appWidgetId, views);

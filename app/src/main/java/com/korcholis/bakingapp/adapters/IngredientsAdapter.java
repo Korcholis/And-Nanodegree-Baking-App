@@ -45,10 +45,6 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         return ingredients.size();
     }
 
-    public interface OnItemClickListener {
-        void onClick(int id);
-    }
-
     public class IngredientHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.quantity)
         TextView quantity;
