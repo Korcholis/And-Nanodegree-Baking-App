@@ -85,7 +85,7 @@ public class IngredientsWidgetService extends RemoteViewsService {
             Intent fillInIntent = new Intent();
             fillInIntent.putExtra("ingredient", ingredient);
             fillInIntent.putExtras(extras);
-            rv.setOnClickFillInIntent(R.id.item_layout, fillInIntent);
+            rv.setOnClickFillInIntent(R.id.name_cb, fillInIntent);
             return rv;
         }
 

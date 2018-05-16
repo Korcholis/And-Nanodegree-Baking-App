@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
@@ -129,14 +130,7 @@ public class RecipeDetailActivity extends CakeActivity {
             @Override
             public void onClick(RecipeStep recipeStep) {
                 if (mTwoPane) {
-                    Bundle arguments = new Bundle();
-                    arguments.putInt(Constants.PARAM_RECIPE_ID, recipeStep.getRecipeId());
-                    arguments.putInt(Constants.PARAM_STEP_ID, recipeStep.getStep());
-                    InstructionsFragment fragment = new InstructionsFragment();
-                    fragment.setArguments(arguments);
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.step_detail_container, fragment)
-                            .commit();
+                    changePageInTwoPane(recipeStep);
                 } else {
                     Intent intent = new Intent(getBaseContext(), InstructionsActivity.class);
 
@@ -176,8 +170,25 @@ public class RecipeDetailActivity extends CakeActivity {
                                 setTitle(recipe.getName());
                                 ingredientsAdapter.swapContent(recipe.getIngredients());
                                 stepsAdapter.swapContent(recipe.getSteps());
+                                initViewPagerInTwoPane();
                             }
                         })
         );
+    }
+
+    private void changePageInTwoPane(RecipeStep recipeStep) {
+        InstructionsFragment fragment = (InstructionsFragment) getSupportFragmentManager().findFragmentById(R.id.step_detail_container);
+        fragment.goToStep(recipeStep);
+    }
+
+    private void initViewPagerInTwoPane() {
+        Bundle arguments = new Bundle();
+        arguments.putInt(Constants.PARAM_RECIPE_ID, recipeId);
+        arguments.putInt(Constants.PARAM_STEP_ID, 0);
+        InstructionsFragment fragment = new InstructionsFragment();
+        fragment.setArguments(arguments);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.step_detail_container, fragment)
+                .commit();
     }
 }

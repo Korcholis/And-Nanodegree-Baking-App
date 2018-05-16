@@ -5,8 +5,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -33,8 +31,6 @@ public class InstructionsActivity extends CakeActivity {
     Toolbar toolbar;
     @BindView(R.id.app_bar)
     AppBarLayout appBar;
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
     @Nullable
     @BindView(R.id.fragment_scroll_wrapper)
     NestedScrollView fragmentScrollWrapper;
@@ -82,16 +78,6 @@ public class InstructionsActivity extends CakeActivity {
             fragmentScrollWrapper.setFillViewport(true);
         }
 
-        if (fab != null) {
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-            });
-        }
-
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -103,7 +89,6 @@ public class InstructionsActivity extends CakeActivity {
         if (((InstructionsFragment)getSupportFragmentManager().findFragmentById(R.id.step_detail_container)).shouldSetFullscreen()) {
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-                fab.setVisibility(View.GONE);
                 appBar.animate().translationY(-appBar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
                 ViewGroup.LayoutParams params = appBar.getLayoutParams();
                 previousAppBarSize = params.height;
@@ -113,7 +98,6 @@ public class InstructionsActivity extends CakeActivity {
             } else {
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
                 appBar.setExpanded(true, false);
-                fab.setVisibility(View.VISIBLE);
                 appBar.animate().translationY(0).setInterpolator(new DecelerateInterpolator()).start();
                 ViewGroup.LayoutParams params = appBar.getLayoutParams();
                 params.height = previousAppBarSize;

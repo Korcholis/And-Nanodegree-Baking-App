@@ -117,9 +117,6 @@ public class InstructionsFragment extends Fragment {
                             .subscribe(new Consumer<Recipe>() {
                                 @Override
                                 public void accept(Recipe recipe) {
-                                    /*setTitle(recipe.getName());
-                                    ingredientsAdapter.swapContent(recipe.getIngredients());
-                                    stepsAdapter.swapContent(recipe.getSteps());*/
                                     pagerAdapter.swapRecipe(recipe);
                                     viewPager.setCurrentItem(stepId);
                                 }
@@ -157,12 +154,6 @@ public class InstructionsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.step_detail, container, false);
         ButterKnife.bind(this, rootView);
 
-        // Show the dummy content as text in a TextView.
-        if (recipe != null) {
-            //((TextView) rootView.findViewById(R.id.step_detail)).setText(recipe.details);
-        }
-
-        // Set up the ViewPager with the sections adapter.
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -222,6 +213,10 @@ public class InstructionsFragment extends Fragment {
 
     public boolean shouldSetFullscreen() {
         return ((StepPageFragment) getActivity().getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + viewPager.getCurrentItem())).hasVideo;
+    }
+
+    public void goToStep(RecipeStep recipeStep) {
+        viewPager.setCurrentItem(recipeStep.getStep());
     }
 
     /**

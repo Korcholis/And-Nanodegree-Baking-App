@@ -3,20 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
     android:baselineAligned="false"
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
+    android:weightSum="3"
     tools:context=".RecipeDetailActivity">
 
     <android.support.v4.widget.NestedScrollView
         android:name="com.korcholis.bakingapp.StepListFragment"
-        android:layout_width="@dimen/item_width"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
+        android:layout_weight="1"
         tools:context="com.korcholis.bakingapp.RecipeDetailActivity">
 
         <LinearLayout
@@ -41,6 +41,7 @@
         android:id="@+id/step_detail_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="3" />
+        android:layout_weight="2"
+        tools:ignore="InconsistentLayout" />
 
 </LinearLayout>

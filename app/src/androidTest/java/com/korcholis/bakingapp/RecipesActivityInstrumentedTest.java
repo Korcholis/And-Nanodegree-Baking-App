@@ -34,8 +34,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
-;
-
 @RunWith(AndroidJUnit4.class)
 public class RecipesActivityInstrumentedTest {
     public static Matcher<View> nthChildOf(final Matcher<View> parentMatcher, final int childPosition) {

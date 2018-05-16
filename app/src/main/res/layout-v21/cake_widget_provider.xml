@@ -3,7 +3,6 @@
     android:layout_height="match_parent"
     android:background="#fefefe"
     android:orientation="vertical"
-    android:layout_margin="@dimen/widget_margin"
     android:padding="8dp">
 
     <LinearLayout
@@ -24,6 +23,7 @@
                 android:textSize="24sp" />
 
             <ImageButton
+                android:backgroundTint="@color/colorAccent"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:id="@+id/open_recipe_btn"
                 android:layout_width="40dp"
