@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
@@ -49,8 +48,8 @@ public class RecipeDetailActivity extends CakeActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @Nullable
-    @BindView(R.id.step_detail_container)
-    View detailPanel;
+    @BindView(R.id.step_item_container)
+    View stepPanel;
     @BindView(R.id.ingredient_list)
     RecyclerView ingredientsList;
     @BindView(R.id.step_list)
@@ -86,7 +85,7 @@ public class RecipeDetailActivity extends CakeActivity {
             return;
         }
 
-        if (detailPanel != null) {
+        if (stepPanel != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-w900dp).
             // If this view is present, then the
@@ -177,7 +176,7 @@ public class RecipeDetailActivity extends CakeActivity {
     }
 
     private void changePageInTwoPane(RecipeStep recipeStep) {
-        InstructionsFragment fragment = (InstructionsFragment) getSupportFragmentManager().findFragmentById(R.id.step_detail_container);
+        InstructionsFragment fragment = (InstructionsFragment) getSupportFragmentManager().findFragmentById(R.id.step_item_container);
         fragment.goToStep(recipeStep);
     }
 
@@ -192,7 +191,7 @@ public class RecipeDetailActivity extends CakeActivity {
         InstructionsFragment fragment = new InstructionsFragment();
         fragment.setArguments(arguments);
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.step_detail_container, fragment)
+                .add(R.id.step_item_container, fragment)
                 .commit();
     }
 }
