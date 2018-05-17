@@ -18,4 +18,5 @@
     <string name="recipe">Recipe</string>
     <string name="list_empty">The list is empty</string>
     <string name="quantity_and_measure">%1$s <i>%2$s %3$s</i></string>
+    <string name="open_recipe">Open recipe</string>
 </resources>

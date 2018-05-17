@@ -245,13 +245,13 @@ public class InstructionsFragment extends Fragment {
         }
 
         public void playVideo() {
-            if (hasVideo) {
+            if (hasVideo && exoPlayer != null) {
                 exoPlayer.setPlayWhenReady(true);
             }
         }
 
         public void pauseVideo() {
-            if (hasVideo) {
+            if (hasVideo && exoPlayer != null) {
                 exoPlayer.setPlayWhenReady(false);
             }
         }

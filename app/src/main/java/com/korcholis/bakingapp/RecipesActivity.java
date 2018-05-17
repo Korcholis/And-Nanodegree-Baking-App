@@ -44,8 +44,6 @@ public class RecipesActivity extends CakeActivity {
     RecyclerView recipesList;
     @BindView(R.id.loading_pb)
     ProgressBar loadingPb;
-    @BindView(R.id.error_layer)
-    LinearLayout errorLayer;
     @BindView(R.id.error_message)
     TextView errorMessage;
 
@@ -209,20 +207,20 @@ public class RecipesActivity extends CakeActivity {
     }
 
     private void showLoading() {
-        errorLayer.setVisibility(View.GONE);
+        errorMessage.setVisibility(View.GONE);
         loadingPb.setVisibility(View.VISIBLE);
         recipesList.setVisibility(View.INVISIBLE);
     }
 
     private void showList() {
-        errorLayer.setVisibility(View.GONE);
+        errorMessage.setVisibility(View.GONE);
         loadingPb.setVisibility(View.GONE);
         recipesList.setVisibility(View.VISIBLE);
     }
 
     private void showErrorView(int errorMessageId) {
         loadingPb.setVisibility(View.GONE);
-        errorLayer.setVisibility(View.VISIBLE);
+        errorMessage.setVisibility(View.VISIBLE);
         errorMessage.setText(errorMessageId);
         recipesList.setVisibility(View.INVISIBLE);
     }

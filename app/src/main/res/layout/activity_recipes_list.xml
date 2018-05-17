@@ -40,29 +40,18 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
-        android:id="@+id/error_layer"
+    <TextView
+        android:layout_gravity="center"
+        android:id="@+id/error_message"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/warning_sign"
+        android:drawablePadding="16dp"
         android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <ImageView
-            android:contentDescription="@string/warning"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
-            android:src="@drawable/warning_sign" />
-
-        <TextView
-            android:id="@+id/error_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="16dp"
-            android:textColor="#D8D8D8"
-            android:textSize="26sp" />
-    </LinearLayout>
+        android:padding="16dp"
+        android:textColor="#D8D8D8"
+        android:textSize="26sp"
+        android:visibility="gone" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recipes_rv"
