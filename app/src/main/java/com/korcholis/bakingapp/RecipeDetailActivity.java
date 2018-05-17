@@ -182,6 +182,10 @@ public class RecipeDetailActivity extends CakeActivity {
     }
 
     private void initViewPagerInTwoPane() {
+        if (!mTwoPane) {
+            return;
+        }
+
         Bundle arguments = new Bundle();
         arguments.putInt(Constants.PARAM_RECIPE_ID, recipeId);
         arguments.putInt(Constants.PARAM_STEP_ID, 0);
