@@ -95,7 +95,7 @@ public class RecipesActivity extends CakeActivity {
                             @Override
                             public void accept(Throwable throwable) {
                                 if (throwable instanceof ConnectionNotAvailableException) {
-
+                                    throwable.printStackTrace();
                                 }
                             }
                         })
@@ -137,7 +137,7 @@ public class RecipesActivity extends CakeActivity {
                                             resolver.insert(RecipesDBContract.RecipeEntry.CONTENT_URI.buildUpon().appendPath(recipeId).appendPath(RecipesDBContract.PATH_STEPS).build(), stepCV);
                                         }
                                     } catch (SQLiteConstraintException constraintException) {
-
+                                        constraintException.printStackTrace();
                                     }
                                 }
                             }
@@ -166,7 +166,7 @@ public class RecipesActivity extends CakeActivity {
                             @Override
                             public void accept(Throwable throwable) {
                                 if (throwable instanceof ConnectionNotAvailableException) {
-
+                                    throwable.printStackTrace();
                                 }
                             }
                         }));
@@ -179,9 +179,9 @@ public class RecipesActivity extends CakeActivity {
             public void accept(List<Recipe> recipes) {
                 if (recipes == null) {
                     if (!ConnectionChecker.isNetworkAvailable(RecipesActivity.this)) {
-                        showNoConnectionErrorToast(false);
+                        showNoConnectionErrorToast();
                     } else {
-                        showErrorListErrorToast(false);
+                        showErrorListErrorToast();
                     }
                 } else {
                     adapter.swapContent(recipes);
@@ -224,18 +224,12 @@ public class RecipesActivity extends CakeActivity {
         recipesList.setVisibility(View.INVISIBLE);
     }
 
-    protected void showErrorListErrorToast(boolean alsoExit) {
-        if (alsoExit) {
-            finish();
-        }
+    protected void showErrorListErrorToast() {
         Toast.makeText(this, R.string.error_recipe_wrong_data, Toast.LENGTH_SHORT).show();
     }
 
 
-    protected void showNoConnectionErrorToast(boolean alsoExit) {
-        if (alsoExit) {
-            finish();
-        }
+    protected void showNoConnectionErrorToast() {
         Toast.makeText(this, R.string.error_no_connection, Toast.LENGTH_SHORT).show();
     }
 }

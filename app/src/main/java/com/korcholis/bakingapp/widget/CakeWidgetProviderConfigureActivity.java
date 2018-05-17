@@ -46,16 +46,14 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class CakeWidgetProviderConfigureActivity extends Activity {
 
-    @Inject
-    RecipesApi recipes;
-
-    @BindView(R.id.recipes_rv)
-    RecyclerView recipesList;
-
     private static final String PREFS_NAME = "com.korcholis.bakingapp.widget.CakeWidgetProvider";
     private static final String PREF_PREFIX_KEY = "cakewidget_";
     private static final String PREF_SUFFIX_ID = "_id";
     private static final String PREF_SUFFIX_NAME = "_name";
+    @Inject
+    RecipesApi recipes;
+    @BindView(R.id.recipes_rv)
+    RecyclerView recipesList;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private int mAppWidgetId = 100;
@@ -169,7 +167,7 @@ public class CakeWidgetProviderConfigureActivity extends Activity {
                             @Override
                             public void accept(Throwable throwable) {
                                 if (throwable instanceof ConnectionNotAvailableException) {
-
+                                    throwable.printStackTrace();
                                 }
                             }
                         })
@@ -211,7 +209,7 @@ public class CakeWidgetProviderConfigureActivity extends Activity {
                                             resolver.insert(RecipesDBContract.RecipeEntry.CONTENT_URI.buildUpon().appendPath(recipeId).appendPath(RecipesDBContract.PATH_STEPS).build(), stepCV);
                                         }
                                     } catch (SQLiteConstraintException constraintException) {
-
+                                        constraintException.printStackTrace();
                                     }
                                 }
                             }
@@ -240,7 +238,7 @@ public class CakeWidgetProviderConfigureActivity extends Activity {
                             @Override
                             public void accept(Throwable throwable) {
                                 if (throwable instanceof ConnectionNotAvailableException) {
-
+                                    throwable.printStackTrace();
                                 }
                             }
                         }));
@@ -253,37 +251,16 @@ public class CakeWidgetProviderConfigureActivity extends Activity {
             public void accept(List<Recipe> recipes) {
                 if (recipes == null) {
                     if (!ConnectionChecker.isNetworkAvailable(CakeWidgetProviderConfigureActivity.this)) {
-                        showNoConnectionErrorToast(false);
                         Toast.makeText(CakeWidgetProviderConfigureActivity.this, "No network", Toast.LENGTH_SHORT).show();
-                    } else {
-                        showMovieListErrorToast(false);
                     }
                 } else {
                     adapter.swapContent(recipes);
-                    if (recipes.isEmpty()) {
-                        if (!ConnectionChecker.isNetworkAvailable(CakeWidgetProviderConfigureActivity.this)) {
-                            showErrorView(R.string.error_no_connection);
-                        } else {
-                            showErrorView(R.string.error_recipe_wrong_data);
-                        }
-                    } else {
+                    if (!recipes.isEmpty()) {
                         showList();
                     }
                 }
             }
         };
-    }
-
-    private void showErrorView(int error_no_connection) {
-
-    }
-
-    private void showMovieListErrorToast(boolean b) {
-
-    }
-
-    private void showNoConnectionErrorToast(boolean b) {
-
     }
 
     private void showList() {

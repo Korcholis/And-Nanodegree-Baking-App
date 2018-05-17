@@ -1,8 +1,6 @@
 package com.korcholis.bakingapp.adapters;
 
 import android.annotation.SuppressLint;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -27,11 +25,12 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
     private List<RecipeStep> recipeSteps;
     private OnItemClickListener listener = null;
     private int selectedItem = 0;
-    private int accentColor = R.color.colorAccent;
     private int selectableColor;
+    private boolean shouldHighlightBackground;
 
-    public RecipeStepsAdapter(List<RecipeStep> steps) {
+    public RecipeStepsAdapter(List<RecipeStep> steps, boolean shouldHighlightBackground) {
         this.recipeSteps = steps;
+        this.shouldHighlightBackground = shouldHighlightBackground;
     }
 
     public void swapContent(List<RecipeStep> recipeSteps) {
@@ -40,8 +39,10 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
     }
 
     public void selectItem(int position) {
-        selectedItem = position;
-        notifyDataSetChanged();
+        if (shouldHighlightBackground) {
+            selectedItem = position;
+            notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -73,8 +74,9 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
         }
         holder.name.setText(recipeStep.getShortDescription());
 
-        holder.itemView.setSelected(selectedItem == position);
-        holder.itemView.setBackgroundResource(selectedItem == position ? accentColor : selectableColor);
+        if (shouldHighlightBackground) {
+            holder.itemView.setBackgroundResource(selectedItem == position ? R.color.colorAccent : selectableColor);
+        }
 
         holder.container.setOnClickListener(new View.OnClickListener() {
             @Override

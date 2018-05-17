@@ -11,6 +11,7 @@ import com.korcholis.bakingapp.R;
 import com.korcholis.bakingapp.models.Ingredient;
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,7 +45,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         if (ingredient.getQuantity() == (int)ingredient.getQuantity()) {
             quantity = Integer.toString((int)ingredient.getQuantity());
         } else {
-            quantity = String.format("%.1f", ingredient.getQuantity());
+            quantity = String.format(Locale.getDefault(), "%.1f", ingredient.getQuantity());
         }
         holder.name.setText(context.getString(R.string.quantity_and_measure, ingredient.getName(), quantity, ingredient.getMeasure()));
     }
@@ -58,7 +59,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         @BindView(R.id.name_cb)
         TextView name;
 
-        public IngredientHolder(View itemView) {
+        IngredientHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

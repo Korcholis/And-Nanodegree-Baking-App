@@ -19,6 +19,7 @@ import com.korcholis.bakingapp.utils.Constants;
  * App Widget Configuration implemented in {@link CakeWidgetProviderConfigureActivity CakeWidgetProviderConfigureActivity}
  */
 public class CakeWidgetProvider extends AppWidgetProvider {
+    @SuppressWarnings("WeakerAccess")
     public static final String UPDATE_ACTION = "android.appwidget.action.APPWIDGET_UPDATE";
     public static final String RECIPE_ID = "recipe_id";
 
@@ -36,7 +37,7 @@ public class CakeWidgetProvider extends AppWidgetProvider {
         views.setEmptyView(R.id.ingredient_list, R.id.empty_tv);
         views.setTextViewText(R.id.ingredients_title, recipeName);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             views.setRemoteAdapter(R.id.ingredient_list, intent);
         } else {
             views.setRemoteAdapter(appWidgetId, R.id.ingredient_list, intent);
@@ -63,7 +64,7 @@ public class CakeWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-        if (intent.getAction().equals(UPDATE_ACTION)) {
+        if (intent != null && intent.getAction() != null && intent.getAction().equals(UPDATE_ACTION)) {
             int appWidgetIds[] = mgr.getAppWidgetIds(new ComponentName(context, CakeWidgetProvider.class));
             mgr.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.ingredient_list);
         }

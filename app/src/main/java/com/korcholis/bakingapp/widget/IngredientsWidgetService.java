@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IngredientsWidgetService extends RemoteViewsService {
-    List<Ingredient> ingredients = new ArrayList<>();
+    private List<Ingredient> ingredients = new ArrayList<>();
     int recipeId;
     Recipe recipe;
 

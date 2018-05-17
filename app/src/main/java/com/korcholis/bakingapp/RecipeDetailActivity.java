@@ -123,7 +123,7 @@ public class RecipeDetailActivity extends CakeActivity {
 
     private void setupRecyclerView(@NonNull RecyclerView ingredientsList, @NonNull RecyclerView stepsList) {
         ingredientsAdapter = new IngredientsAdapter(new ArrayList<Ingredient>());
-        stepsAdapter = new RecipeStepsAdapter(new ArrayList<RecipeStep>());
+        stepsAdapter = new RecipeStepsAdapter(new ArrayList<RecipeStep>(), mTwoPane);
 
         stepsAdapter.setOnItemClickListener(new RecipeStepsAdapter.OnItemClickListener() {
             @Override

@@ -8,6 +8,7 @@ import com.korcholis.bakingapp.widget.CakeWidgetProviderConfigureActivity;
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 
+@SuppressWarnings("unused")
 @Module
 public abstract class ApplicationModule {
     @ContributesAndroidInjector

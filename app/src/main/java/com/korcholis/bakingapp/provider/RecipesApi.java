@@ -1,6 +1,7 @@
 package com.korcholis.bakingapp.provider;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.korcholis.bakingapp.exceptions.ConnectionNotAvailableException;
 import com.korcholis.bakingapp.utils.ConnectionChecker;
@@ -55,7 +56,7 @@ public class RecipesApi {
         httpClient.addInterceptor(new Interceptor() {
 
             @Override
-            public Response intercept(Chain chain) throws IOException {
+            public Response intercept(@NonNull Chain chain) throws IOException {
                 final Request original = chain.request();
                 final HttpUrl originalHttpUrl = original.url();
                 final Request.Builder requestBuilder = original.newBuilder()
