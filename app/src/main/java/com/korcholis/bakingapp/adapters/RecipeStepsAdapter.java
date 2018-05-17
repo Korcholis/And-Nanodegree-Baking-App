@@ -1,9 +1,12 @@
 package com.korcholis.bakingapp.adapters;
 
 import android.annotation.SuppressLint;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +26,9 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
 
     private List<RecipeStep> recipeSteps;
     private OnItemClickListener listener = null;
+    private int selectedItem = 0;
+    private int accentColor = R.color.colorAccent;
+    private int selectableColor;
 
     public RecipeStepsAdapter(List<RecipeStep> steps) {
         this.recipeSteps = steps;
@@ -33,8 +39,17 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
         notifyDataSetChanged();
     }
 
+    public void selectItem(int position) {
+        selectedItem = position;
+        notifyDataSetChanged();
+    }
+
     @Override
     public IngredientHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        TypedValue outValue = new TypedValue();
+        parent.getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+        selectableColor = outValue.resourceId;
+
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_step_list_item, parent, false);
         return new IngredientHolder(view);
     }
@@ -58,12 +73,15 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
         }
         holder.name.setText(recipeStep.getShortDescription());
 
+        holder.itemView.setSelected(selectedItem == position);
+        holder.itemView.setBackgroundResource(selectedItem == position ? accentColor : selectableColor);
 
         holder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int position = holder.getAdapterPosition();
+                selectItem(position);
                 if (listener != null) {
-                    int position = holder.getAdapterPosition();
                     listener.onClick(recipeSteps.get(position));
                 }
             }
