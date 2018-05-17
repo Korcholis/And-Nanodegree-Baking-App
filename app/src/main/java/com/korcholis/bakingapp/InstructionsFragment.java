@@ -57,7 +57,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class InstructionsFragment extends Fragment {
 
-    @BindView(R.id.container)
+    @BindView(R.id.pager_container)
     CakeViewPager viewPager;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -137,14 +137,14 @@ public class InstructionsFragment extends Fragment {
     public void disableFullscreen() {
         if (viewPager != null) {
             viewPager.setPagingEnabled(true);
-            ((StepPageFragment) getActivity().getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + viewPager.getCurrentItem())).restoreVideo();
+            getCurrentPageFragment(viewPager.getCurrentItem()).restoreVideo();
         }
     }
 
     public void enableFullscreen() {
         if (viewPager != null) {
             viewPager.setPagingEnabled(false);
-            ((StepPageFragment) getActivity().getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + viewPager.getCurrentItem())).maximiseVideo();
+            getCurrentPageFragment(viewPager.getCurrentItem()).maximiseVideo();
         }
     }
 
@@ -162,13 +162,13 @@ public class InstructionsFragment extends Fragment {
 
             @Override
             public void onPageSelected(int position) {
-                ((StepPageFragment) getActivity().getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + position)).playVideo();
+                getCurrentPageFragment(position).playVideo();
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
                 if (state == ViewPager.SCROLL_STATE_DRAGGING) {
-                    ((StepPageFragment) getActivity().getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + viewPager.getCurrentItem())).pauseVideo();
+                    getCurrentPageFragment(viewPager.getCurrentItem()).pauseVideo();
                 }
             }
         });
@@ -179,16 +179,20 @@ public class InstructionsFragment extends Fragment {
     public void onStart() {
         super.onStart();
         if (viewPager.getChildCount() > 0) {
-            ((StepPageFragment) getActivity().getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + viewPager.getCurrentItem())).playVideo();
+            getCurrentPageFragment(viewPager.getCurrentItem()).playVideo();
         }
     }
 
     @Override
     public void onStop() {
         if (viewPager.getChildCount() > 0) {
-            ((StepPageFragment) getActivity().getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + viewPager.getCurrentItem())).pauseVideo();
+            getCurrentPageFragment(viewPager.getCurrentItem()).pauseVideo();
         }
         super.onStop();
+    }
+
+    private StepPageFragment getCurrentPageFragment(int position) {
+        return ((StepPageFragment) getActivity().getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager_container + ":" + position));
     }
 
     @Override
@@ -212,7 +216,7 @@ public class InstructionsFragment extends Fragment {
     }
 
     public boolean shouldSetFullscreen() {
-        return ((StepPageFragment) getActivity().getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + viewPager.getCurrentItem())).hasVideo;
+        return getCurrentPageFragment(viewPager.getCurrentItem()).hasVideo;
     }
 
     public void goToStep(RecipeStep recipeStep) {
