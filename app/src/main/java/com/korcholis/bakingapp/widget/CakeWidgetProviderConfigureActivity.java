@@ -63,7 +63,6 @@ public class CakeWidgetProviderConfigureActivity extends Activity {
         super();
     }
 
-    // Write the prefix to the SharedPreferences object for this widget
     private static void saveRecipeData(Context context, int appWidgetId, int recipeId, String recipeName) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.putInt(PREF_PREFIX_KEY + appWidgetId + PREF_SUFFIX_ID, recipeId);

@@ -1,5 +1,6 @@
 package com.korcholis.bakingapp.widget;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -23,6 +24,7 @@ public class CakeWidgetProvider extends AppWidgetProvider {
     public static final String UPDATE_ACTION = "android.appwidget.action.APPWIDGET_UPDATE";
     public static final String RECIPE_ID = "recipe_id";
 
+    @SuppressLint("ObsoleteSdkInt")
     static void updateAppWidget(final Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
         int recipeId = CakeWidgetProviderConfigureActivity.loadRecipeId(context, appWidgetId);
