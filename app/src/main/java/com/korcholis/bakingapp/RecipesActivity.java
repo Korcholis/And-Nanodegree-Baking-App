@@ -7,12 +7,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.korcholis.bakingapp.adapters.RecipesListAdapter;
 import com.korcholis.bakingapp.exceptions.ConnectionNotAvailableException;
@@ -37,6 +38,8 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class RecipesActivity extends CakeActivity {
+    @BindView(R.id.coordinator)
+    CoordinatorLayout coordinator;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.recipes_rv)
@@ -225,11 +228,11 @@ public class RecipesActivity extends CakeActivity {
     }
 
     protected void showErrorListErrorToast() {
-        Toast.makeText(this, R.string.error_recipe_wrong_data, Toast.LENGTH_SHORT).show();
+        Snackbar.make(coordinator, R.string.error_recipe_wrong_data, Snackbar.LENGTH_SHORT).show();
     }
 
 
     protected void showNoConnectionErrorToast() {
-        Toast.makeText(this, R.string.error_no_connection, Toast.LENGTH_SHORT).show();
+        Snackbar.make(coordinator, R.string.error_no_connection, Snackbar.LENGTH_SHORT).show();
     }
 }

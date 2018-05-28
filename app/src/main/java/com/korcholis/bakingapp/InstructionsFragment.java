@@ -288,6 +288,12 @@ public class InstructionsFragment extends Fragment {
 
             stepDescription.setText(recipeStep.getDescription());
 
+            return rootView;
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
             if (!recipeStep.getVideoURL().isEmpty()) {
                 playerView.setVisibility(View.VISIBLE);
                 initializePlayer(recipeStep.getVideoURL());
@@ -296,17 +302,20 @@ public class InstructionsFragment extends Fragment {
                 playerView.setVisibility(View.GONE);
                 hasVideo = false;
             }
-            return rootView;
         }
 
         @Override
-        public void onDestroyView() {
+        public void onPause() {
+            releasePlayer();
+            super.onPause();
+        }
+
+        private void releasePlayer() {
             if (exoPlayer != null) {
                 exoPlayer.stop();
                 exoPlayer.release();
                 exoPlayer = null;
             }
-            super.onDestroyView();
         }
 
         private void initializePlayer(String videoURL) {
