@@ -5,13 +5,17 @@ import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.NavUtils;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -45,6 +49,11 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class RecipeDetailActivity extends CakeActivity {
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private static final String LIST_SCROLL_POSITION = "list_scroll_pos";
+    @BindView(R.id.parent_scroll_view)
+    NestedScrollView parentScrollView;
+    @BindView(R.id.coordinator)
+    CoordinatorLayout coordinator;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @Nullable
@@ -54,6 +63,9 @@ public class RecipeDetailActivity extends CakeActivity {
     RecyclerView ingredientsList;
     @BindView(R.id.step_list)
     RecyclerView stepsList;
+
+    private int savedScrollPos = 0;
+
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -95,6 +107,14 @@ public class RecipeDetailActivity extends CakeActivity {
 
         assert stepsList != null;
         assert ingredientsList != null;
+
+        parentScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                Log.i("ASDFG", oldScrollY+" > "+scrollY);
+            }
+        });
+
         setupRecyclerView(ingredientsList, stepsList);
     }
 
@@ -102,6 +122,18 @@ public class RecipeDetailActivity extends CakeActivity {
     protected void onDestroy() {
         compositeDisposable.clear();
         super.onDestroy();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(LIST_SCROLL_POSITION, parentScrollView.getScrollY());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        savedScrollPos = savedInstanceState.getInt(LIST_SCROLL_POSITION, 0);
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
@@ -170,6 +202,21 @@ public class RecipeDetailActivity extends CakeActivity {
                                 ingredientsAdapter.swapContent(recipe.getIngredients());
                                 stepsAdapter.swapContent(recipe.getSteps());
                                 initViewPagerInTwoPane();
+
+                                AsyncTask<Void, Void, Integer> asyncTask = new AsyncTask<Void, Void, Integer>() {
+                                    @Override
+                                    protected Integer doInBackground(Void... voids) {
+                                        return 0;
+                                    }
+
+                                    @Override
+                                    protected void onPostExecute(Integer anInt) {
+                                        super.onPostExecute(anInt);
+                                        parentScrollView.scrollTo(0, savedScrollPos);
+                                    }
+                                };
+
+                                asyncTask.execute();
                             }
                         })
         );
