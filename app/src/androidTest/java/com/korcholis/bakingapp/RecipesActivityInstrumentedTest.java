@@ -121,6 +121,6 @@ public class RecipesActivityInstrumentedTest {
         instructionsActivityRule.launchActivity(intent);
 
         onView(withId(R.id.root)).perform(swipeUp());
-        onView(withId(R.id.container)).perform(swipeLeft());
+        onView(withId(R.id.step_detail_container)).perform(swipeLeft());
     }
 }

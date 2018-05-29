@@ -64,6 +64,8 @@ public class RecipeDetailActivity extends CakeActivity {
     @BindView(R.id.step_list)
     RecyclerView stepsList;
 
+    private static final String TAG = "ASDFG";
+
     private int savedScrollPos = 0;
 
     /**
@@ -108,31 +110,28 @@ public class RecipeDetailActivity extends CakeActivity {
         assert stepsList != null;
         assert ingredientsList != null;
 
-        parentScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                Log.i("ASDFG", oldScrollY+" > "+scrollY);
-            }
-        });
-
         setupRecyclerView(ingredientsList, stepsList);
+        Log.i(TAG, "onCreate: " + savedScrollPos);
     }
 
     @Override
     protected void onDestroy() {
         compositeDisposable.clear();
+        Log.i(TAG, "onDestroy: " + savedScrollPos);
         super.onDestroy();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(LIST_SCROLL_POSITION, parentScrollView.getScrollY());
+        Log.i(TAG, "onSaveInstanceState: " + savedScrollPos);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         savedScrollPos = savedInstanceState.getInt(LIST_SCROLL_POSITION, 0);
+        Log.i(TAG, "onRestoreInstanceState: " + savedScrollPos);
         super.onRestoreInstanceState(savedInstanceState);
     }
 
@@ -202,6 +201,7 @@ public class RecipeDetailActivity extends CakeActivity {
                                 ingredientsAdapter.swapContent(recipe.getIngredients());
                                 stepsAdapter.swapContent(recipe.getSteps());
                                 initViewPagerInTwoPane();
+                                Log.i(TAG, "RX:Subscribe: " + savedScrollPos);
 
                                 AsyncTask<Void, Void, Integer> asyncTask = new AsyncTask<Void, Void, Integer>() {
                                     @Override
@@ -240,5 +240,29 @@ public class RecipeDetailActivity extends CakeActivity {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.step_item_container, fragment)
                 .commit();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(TAG, "onPause: " + savedScrollPos);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i(TAG, "onStart: " + savedScrollPos);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i(TAG, "onStop: " + savedScrollPos);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume: " + savedScrollPos);
     }
 }
