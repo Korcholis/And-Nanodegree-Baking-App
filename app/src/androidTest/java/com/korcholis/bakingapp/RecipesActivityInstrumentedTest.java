@@ -110,7 +110,7 @@ public class RecipesActivityInstrumentedTest {
 
         instructionsActivityRule.getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        onView(allOf(withId(R.id.video_player), isDescendantOfA(nthChildOf(withId(R.id.container), 0)))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.video_player), isDescendantOfA(nthChildOf(withId(R.id.pager_container), 0)))).check(matches(isDisplayed()));
     }
 
     @Test
