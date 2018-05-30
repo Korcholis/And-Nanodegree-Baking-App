@@ -2,6 +2,7 @@ package com.korcholis.bakingapp;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -58,6 +60,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class InstructionsFragment extends Fragment {
 
+    private static final String CURRENT_PAGER_PAGE = "current_pager_page";
     @BindView(R.id.pager_container)
     CakeViewPager viewPager;
     /**
@@ -76,6 +79,7 @@ public class InstructionsFragment extends Fragment {
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private int recipeId;
     private int stepId;
+    private int currentPagerPage = 0;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -120,6 +124,8 @@ public class InstructionsFragment extends Fragment {
                                 public void accept(Recipe recipe) {
                                     pagerAdapter.swapRecipe(recipe);
                                     viewPager.setCurrentItem(stepId);
+                                    setFullscreenOrNot();
+                                    viewPager.setCurrentItem(currentPagerPage);
                                 }
                             })
             );
@@ -130,23 +136,29 @@ public class InstructionsFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt(CURRENT_PAGER_PAGE, viewPager != null? viewPager.getCurrentItem() : 0);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(savedInstanceState != null) {
+            currentPagerPage = savedInstanceState.getInt(CURRENT_PAGER_PAGE, 0);
+        }
+    }
+
+    private void setFullscreenOrNot() {
+        if (shouldSetFullscreen() && getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
+    }
+
+    @Override
     public void onDestroy() {
         compositeDisposable.clear();
         super.onDestroy();
-    }
-
-    public void disableFullscreen() {
-        if (viewPager != null) {
-            viewPager.setPagingEnabled(true);
-            getCurrentPageFragment(viewPager.getCurrentItem()).restoreVideo();
-        }
-    }
-
-    public void enableFullscreen() {
-        if (viewPager != null) {
-            viewPager.setPagingEnabled(false);
-            getCurrentPageFragment(viewPager.getCurrentItem()).maximiseVideo();
-        }
     }
 
     @Override
@@ -259,18 +271,6 @@ public class InstructionsFragment extends Fragment {
             if (hasVideo && exoPlayer != null) {
                 exoPlayer.setPlayWhenReady(false);
             }
-        }
-
-        public void maximiseVideo() {
-            ViewGroup.LayoutParams params = playerView.getLayoutParams();
-            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            playerView.setLayoutParams(params);
-        }
-
-        public void restoreVideo() {
-            ViewGroup.LayoutParams params = playerView.getLayoutParams();
-            params.height = getActivity().getResources().getDimensionPixelSize(R.dimen.video_height);
-            playerView.setLayoutParams(params);
         }
 
         @Override

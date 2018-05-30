@@ -9,10 +9,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
+import android.view.Window;
 
 import com.korcholis.bakingapp.utils.Constants;
 
@@ -34,11 +31,15 @@ public class InstructionsActivity extends CakeActivity {
     @Nullable
     @BindView(R.id.fragment_scroll_wrapper)
     NestedScrollView fragmentScrollWrapper;
-    private int previousAppBarSize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+        }
+
         setContentView(R.layout.activity_step_detail);
         ButterKnife.bind(this);
 
@@ -85,7 +86,7 @@ public class InstructionsActivity extends CakeActivity {
         }
     }
 
-    private void switchToFullscreenOrNot() {
+    /*private void switchToFullscreenOrNot() {
         if (((InstructionsFragment)getSupportFragmentManager().findFragmentById(R.id.step_detail_container)).shouldSetFullscreen()) {
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
@@ -106,7 +107,7 @@ public class InstructionsActivity extends CakeActivity {
                 ((InstructionsFragment)getSupportFragmentManager().findFragmentById(R.id.step_detail_container)).disableFullscreen();
             }
         }
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -122,11 +123,5 @@ public class InstructionsActivity extends CakeActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        switchToFullscreenOrNot();
     }
 }
