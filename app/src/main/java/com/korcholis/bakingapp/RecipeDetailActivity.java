@@ -5,7 +5,6 @@ import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,7 +14,6 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -29,15 +27,10 @@ import com.korcholis.bakingapp.provider.RecipesDBHelper;
 import com.korcholis.bakingapp.utils.Constants;
 
 import java.util.ArrayList;
-import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * An activity representing a list of Steps. This activity
@@ -48,8 +41,8 @@ import io.reactivex.schedulers.Schedulers;
  * item details side-by-side using two vertical panes.
  */
 public class RecipeDetailActivity extends CakeActivity {
-    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private static final String LIST_SCROLL_POSITION = "list_scroll_pos";
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     @BindView(R.id.parent_scroll_view)
     NestedScrollView parentScrollView;
     @BindView(R.id.coordinator)
@@ -63,9 +56,6 @@ public class RecipeDetailActivity extends CakeActivity {
     RecyclerView ingredientsList;
     @BindView(R.id.step_list)
     RecyclerView stepsList;
-
-    private static final String TAG = "ASDFG";
-
     private int savedScrollPos = 0;
 
     /**
@@ -111,27 +101,23 @@ public class RecipeDetailActivity extends CakeActivity {
         assert ingredientsList != null;
 
         setupRecyclerView(ingredientsList, stepsList);
-        Log.i(TAG, "onCreate: " + savedScrollPos);
     }
 
     @Override
     protected void onDestroy() {
         compositeDisposable.clear();
-        Log.i(TAG, "onDestroy: " + savedScrollPos);
         super.onDestroy();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(LIST_SCROLL_POSITION, parentScrollView.getScrollY());
-        Log.i(TAG, "onSaveInstanceState: " + savedScrollPos);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         savedScrollPos = savedInstanceState.getInt(LIST_SCROLL_POSITION, 0);
-        Log.i(TAG, "onRestoreInstanceState: " + savedScrollPos);
         super.onRestoreInstanceState(savedInstanceState);
     }
 
@@ -175,51 +161,23 @@ public class RecipeDetailActivity extends CakeActivity {
         ingredientsList.setAdapter(ingredientsAdapter);
         stepsList.setAdapter(stepsAdapter);
 
-        compositeDisposable.add(
-                Observable.fromCallable(new Callable<Recipe>() {
-                    @Override
-                    public Recipe call() {
-                        ContentResolver resolver = getContentResolver();
+        ContentResolver resolver = getContentResolver();
 
-                        Uri recipeUri = ContentUris.withAppendedId(RecipesDBContract.RecipeEntry.CONTENT_URI, recipeId);
-                        Uri ingredientsUri = RecipesDBContract.RecipeEntry.CONTENT_URI.buildUpon().appendPath(recipeId + "").appendPath(RecipesDBContract.PATH_INGREDIENTS).build();
-                        Uri stepsUri = RecipesDBContract.RecipeEntry.CONTENT_URI.buildUpon().appendPath(recipeId + "").appendPath(RecipesDBContract.PATH_STEPS).build();
+        Uri recipeUri = ContentUris.withAppendedId(RecipesDBContract.RecipeEntry.CONTENT_URI, recipeId);
+        Uri ingredientsUri = RecipesDBContract.RecipeEntry.CONTENT_URI.buildUpon().appendPath(recipeId + "").appendPath(RecipesDBContract.PATH_INGREDIENTS).build();
+        Uri stepsUri = RecipesDBContract.RecipeEntry.CONTENT_URI.buildUpon().appendPath(recipeId + "").appendPath(RecipesDBContract.PATH_STEPS).build();
 
-                        Cursor recipeCursor = resolver.query(recipeUri, null, null, null, null);
-                        Cursor ingredientsCursor = resolver.query(ingredientsUri, null, null, null, null);
-                        Cursor stepsCursor = resolver.query(stepsUri, null, null, null, null);
+        Cursor recipeCursor = resolver.query(recipeUri, null, null, null, null);
+        Cursor ingredientsCursor = resolver.query(ingredientsUri, null, null, null, null);
+        Cursor stepsCursor = resolver.query(stepsUri, null, null, null, null);
 
-                        return RecipesDBHelper.cursorToRecipeWithExtras(recipeCursor, ingredientsCursor, stepsCursor);
-                    }
-                })
-                        .subscribeOn(Schedulers.computation())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Consumer<Recipe>() {
-                            @Override
-                            public void accept(Recipe recipe) {
-                                setTitle(recipe.getName());
-                                ingredientsAdapter.swapContent(recipe.getIngredients());
-                                stepsAdapter.swapContent(recipe.getSteps());
-                                initViewPagerInTwoPane();
-                                Log.i(TAG, "RX:Subscribe: " + savedScrollPos);
+        Recipe recipe = RecipesDBHelper.cursorToRecipeWithExtras(recipeCursor, ingredientsCursor, stepsCursor);
+        setTitle(recipe.getName());
+        ingredientsAdapter.swapContent(recipe.getIngredients());
+        stepsAdapter.swapContent(recipe.getSteps());
+        initViewPagerInTwoPane();
 
-                                AsyncTask<Void, Void, Integer> asyncTask = new AsyncTask<Void, Void, Integer>() {
-                                    @Override
-                                    protected Integer doInBackground(Void... voids) {
-                                        return 0;
-                                    }
-
-                                    @Override
-                                    protected void onPostExecute(Integer anInt) {
-                                        super.onPostExecute(anInt);
-                                        parentScrollView.scrollTo(0, savedScrollPos);
-                                    }
-                                };
-
-                                asyncTask.execute();
-                            }
-                        })
-        );
+        parentScrollView.scrollTo(0, savedScrollPos);
     }
 
     private void changePageInTwoPane(RecipeStep recipeStep) {
@@ -240,29 +198,5 @@ public class RecipeDetailActivity extends CakeActivity {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.step_item_container, fragment)
                 .commit();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.i(TAG, "onPause: " + savedScrollPos);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.i(TAG, "onStart: " + savedScrollPos);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.i(TAG, "onStop: " + savedScrollPos);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i(TAG, "onResume: " + savedScrollPos);
     }
 }
