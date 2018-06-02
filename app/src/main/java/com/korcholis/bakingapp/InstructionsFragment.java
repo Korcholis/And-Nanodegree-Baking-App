@@ -175,13 +175,19 @@ public class InstructionsFragment extends Fragment {
 
             @Override
             public void onPageSelected(int position) {
-                getCurrentPageFragment(position).playVideo();
+                StepPageFragment fragment = getCurrentPageFragment(position);
+                if (fragment != null) {
+                    fragment.playVideo();
+                }
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
                 if (state == ViewPager.SCROLL_STATE_DRAGGING) {
-                    getCurrentPageFragment(viewPager.getCurrentItem()).pauseVideo();
+                    StepPageFragment fragment = getCurrentPageFragment(viewPager.getCurrentItem());
+                    if (fragment != null) {
+                        fragment.pauseVideo();
+                    }
                 }
             }
         });
@@ -192,14 +198,20 @@ public class InstructionsFragment extends Fragment {
     public void onStart() {
         super.onStart();
         if (viewPager.getChildCount() > 0) {
-            getCurrentPageFragment(viewPager.getCurrentItem()).playVideo();
+            StepPageFragment fragment = getCurrentPageFragment(viewPager.getCurrentItem());
+            if (fragment != null) {
+                fragment.playVideo();
+            }
         }
     }
 
     @Override
     public void onStop() {
         if (viewPager.getChildCount() > 0) {
-            getCurrentPageFragment(viewPager.getCurrentItem()).pauseVideo();
+            StepPageFragment fragment = getCurrentPageFragment(viewPager.getCurrentItem());
+            if (fragment != null) {
+                fragment.pauseVideo();
+            }
         }
         super.onStop();
     }
@@ -229,11 +241,17 @@ public class InstructionsFragment extends Fragment {
     }
 
     public boolean shouldSetFullscreen() {
-        return getCurrentPageFragment(viewPager.getCurrentItem()).hasVideo;
+        StepPageFragment fragment = getCurrentPageFragment(viewPager.getCurrentItem());
+        if(fragment == null) {
+            return false;
+        }
+        return fragment.hasVideo;
     }
 
     public void goToStep(RecipeStep recipeStep) {
-        viewPager.setCurrentItem(recipeStep.getStep());
+        if (viewPager.getChildCount() > 0) {
+            viewPager.setCurrentItem(recipeStep.getStep());
+        }
     }
 
     /**
