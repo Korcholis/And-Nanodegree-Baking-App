@@ -241,6 +241,9 @@ public class InstructionsFragment extends Fragment {
      */
     @SuppressWarnings("deprecation")
     public static class StepPageFragment extends Fragment {
+        private static final String CURRENT_VIDEO_POSITION = "current_video_position_";
+        private static final String CURRENT_VIDEO_PLAYING = "current_video_playing_";
+
         @BindView(R.id.step_description)
         TextView stepDescription;
         @BindView(R.id.video_player)
@@ -248,6 +251,9 @@ public class InstructionsFragment extends Fragment {
         private SimpleExoPlayer exoPlayer;
         private RecipeStep recipeStep;
         private boolean hasVideo = false;
+
+        private long currentVideoPosition = 0l;
+        private boolean currentVideoPlaying = true;
 
         public StepPageFragment() {
         }
@@ -278,6 +284,11 @@ public class InstructionsFragment extends Fragment {
             super.onCreate(savedInstanceState);
 
             recipeStep = getArguments().getParcelable(Constants.PARAM_STEP);
+
+            if (savedInstanceState != null && !recipeStep.getVideoURL().isEmpty()) {
+                currentVideoPosition = savedInstanceState.getLong(CURRENT_VIDEO_POSITION + recipeStep.getStep(), 0l);
+                currentVideoPlaying = savedInstanceState.getBoolean(CURRENT_VIDEO_PLAYING + recipeStep.getStep(), true);
+            }
         }
 
         @Override
@@ -289,6 +300,16 @@ public class InstructionsFragment extends Fragment {
             stepDescription.setText(recipeStep.getDescription());
 
             return rootView;
+        }
+
+        @Override
+        public void onSaveInstanceState(@NonNull Bundle outState) {
+            super.onSaveInstanceState(outState);
+
+            if(hasVideo) {
+                outState.putLong(CURRENT_VIDEO_POSITION + recipeStep.getStep(), currentVideoPosition);
+                outState.putBoolean(CURRENT_VIDEO_PLAYING + recipeStep.getStep(), currentVideoPlaying);
+            }
         }
 
         @Override
@@ -312,6 +333,8 @@ public class InstructionsFragment extends Fragment {
 
         private void releasePlayer() {
             if (exoPlayer != null) {
+                currentVideoPosition = exoPlayer.getCurrentPosition();
+                currentVideoPlaying = exoPlayer.getPlayWhenReady();
                 exoPlayer.stop();
                 exoPlayer.release();
                 exoPlayer = null;
@@ -330,7 +353,8 @@ public class InstructionsFragment extends Fragment {
             Uri videoUri = Uri.parse(videoURL);
             MediaSource mediaSource = new ExtractorMediaSource(videoUri, new DefaultDataSourceFactory(getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
             exoPlayer.prepare(mediaSource);
-            exoPlayer.setPlayWhenReady(true);
+            exoPlayer.seekTo(currentVideoPosition);
+            exoPlayer.setPlayWhenReady(currentVideoPlaying);
             if (recipeStep.getStep() > 0) {
                 exoPlayer.setRepeatMode(Player.REPEAT_MODE_ONE);
             } else {
